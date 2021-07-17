@@ -1,0 +1,161 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+
+id: "file"
+title: file
+type: object
+namespace: https://gen3.theanvil.io
+category: data_file
+program: '*'
+project: '*'
+description: >-
+  Data file containing arbitrary information.
+additionalProperties: false
+submittable: false
+validators: null
+
+systemProperties:
+  - id
+  - project_id
+  - created_datetime
+  - updated_datetime
+  - state
+  - file_state
+  - error_type
+
+links:
+  - exclusive: false
+    required: true
+    subgroup:
+      - name: core_metadata_collections
+        backref: files
+        label: data_from
+        target_type: core_metadata_collection
+        multiplicity: many_to_one
+        required: false
+      - name: samples
+        backref: files
+        label: data_from
+        target_type: sample
+        multiplicity: many_to_many
+        required: false
+      - name: projects
+        backref: files
+        label: data_from
+        target_type: project
+        multiplicity: many_to_one
+        required: false
+      - name: aliquots
+        backref: files
+        label: data_from
+        target_type: aliquot
+        multiplicity: many_to_many
+        required: false
+
+required:
+  - type
+  - submitter_id
+  - file_name
+  - file_size
+  - md5sum
+  - data_type
+  - data_format
+  - data_category
+
+uniqueKeys:
+  - [id]
+  - [project_id, submitter_id]
+
+properties:
+
+  $ref: "_definitions.yaml#/data_file_properties"
+
+  alignment_method:
+    description: >-
+      Alignment method used.
+    type: string
+
+  capture_region_bed_file:
+    description: >-
+      Capture region bed file (if applicable).
+    type: string
+
+  data_processing_pipeline:
+    description: >-
+      Data processing pipeline used.
+    type: string
+
+  date_data_generation:
+    description: >-
+      Date of data generation.
+    type: string
+
+
+  samples:
+    $ref: "_definitions.yaml#/to_many"
+
+  aliquots:
+    $ref: "_definitions.yaml#/to_many"
+
+
+  data_format:
+    term:
+      $ref: "_terms.yaml#/data_format"
+    enum:
+      - VCF
+      - junc
+      - tbi
+      - txt
+      - tsv
+      - xlsx
+      - bam
+      - bai
+      - fastq
+      - bigWig
+      - crai
+      - cram
+      - bed
+      - bim
+      - fam
+      - pdf
+      - idat
+      - svs
+      - tab
+      - gds
+      - other
+
+  data_type:
+    term:
+      $ref: "_terms.yaml#/data_type"
+    enum:
+      - Aligned Reads
+      - Analysis Supplement
+      - Unaligned Reads
+      - Annotated Mutation
+      - Allele Specific Expression
+      - Junction Files
+      - Haplotype Phasing
+      - Histology
+      - Clinical Supplement
+      - Transcriptome Expression
+      - Variants Annotation
+      - Other
+
+  data_category:
+    term:
+      $ref: "_terms.yaml#/data_category"
+    enum:
+      - Analysis
+      - Sequencing Reads
+      - Single Nucleotide Variation
+      - Simple Nucleotide Variation
+      - Transcriptome Profiling
+      - Clinical
+      - Imaging
+      - Supplemental      
+      - Other
+   
+  core_metadata_collections:
+    $ref: "_definitions.yaml#/to_many"
+  
+  projects:
+    $ref: "_definitions.yaml#/to_one_project"
